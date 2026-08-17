@@ -20,3 +20,18 @@ export function setSelectedArea(area){
 export function getSelectedArea(){
     return selectedArea;
 }
+
+// Current Recipes
+
+let currentRecipes = [];
+export function setCurrentRecipes(recipes) {
+    currentRecipes = recipes;
+}
+
+export function getCurrentRecipes() {
+    return currentRecipes;
+}
+
+export function getRecipeById(id) {
+    return currentRecipes.find(recipe => recipe.id === id)
+}
