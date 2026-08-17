@@ -152,7 +152,7 @@ export function renderAreas(data) {
   const areasList = data.results
 
   let box = `<button class="px-4 py-2 rounded-full font-medium bg-emerald-600 text-white text-sm whitespace-nowrap hover:bg-emerald-700 transition-all" data-area = "all">All Cuisines</button>`
-  for (let i = 0; i < areasList.length; i++) {
+  for (let i = 0; i < 10; i++) {
     box +=
       ` <button
             class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium text-sm whitespace-nowrap hover:bg-gray-200 transition-all" data-area = "${areasList[i].name}">
