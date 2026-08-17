@@ -497,7 +497,7 @@ export function renderLoggedItem(meal, index) {
                             <div>
                                 <p class="font-semibold text-gray-900">${meal.name}</p>
                                 <p class="text-sm text-gray-500">
-                                    ${meal.servings} serving
+                                    ${meal.type === "product" ? meal.category :`${meal.servings} serving`} 
                                     <span class="mx-1">•</span>
                                     <span class="text-emerald-600">${meal.type === "product" ? "Product" : "Recipe"}</span>
                                 </p>

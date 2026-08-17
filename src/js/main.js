@@ -303,7 +303,6 @@ async function loadSearchResults(query) {
 }
 
 let searchTimer;
-
 searchInput.addEventListener("input", (e) => {
     clearTimeout(searchTimer);
     let query = e.target.value.trim()
@@ -729,6 +728,8 @@ async function loadProductByBarcode(barcode) {
         productsCount.textContent = products.length + " products found";
         if (products.length === 0) {
             showToast("Product not found in database");
+        }else{
+            openLogProductModal(products[0]);
         }
     } catch (error) {
         setProductsGridLayout(false);
