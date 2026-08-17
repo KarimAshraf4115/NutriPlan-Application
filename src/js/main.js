@@ -749,7 +749,7 @@ function showToast(message) {
     }, 3000);
 }
 
-lookupBarcodeBtn.addEventListener("click", () => {
+function handleBarcodeSearch() {
     const barcode = barcodeInput.value.trim();
     if (barcode.length === 0) {
         setProductsGridLayout(false);
@@ -758,9 +758,9 @@ lookupBarcodeBtn.addEventListener("click", () => {
         return;
     }
     loadProductByBarcode(barcode);
-});
+}
 
-searchProductBtn.addEventListener("click", () => {
+function handleProductSearch() {
     const query = productSearchInput.value.trim();
     if (query.length === 0) {
         setProductsGridLayout(false);
@@ -769,8 +769,24 @@ searchProductBtn.addEventListener("click", () => {
         return;
     }
     loadProducts(searchProducts, query);
+}
+
+lookupBarcodeBtn.addEventListener("click", handleBarcodeSearch);
+searchProductBtn.addEventListener("click", handleProductSearch);
+
+barcodeInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        handleBarcodeSearch();
+    }
 });
 
+productSearchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        handleProductSearch();
+    }
+});
 
 productCategoryButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
