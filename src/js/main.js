@@ -433,6 +433,7 @@ async function initApp() {
         loadProductsCategories()
     ]);
     hideLoadingOverlay()
+    document.body.classList.add("app-ready");
 }
 
 // ---------------------------------------------------------------------------
