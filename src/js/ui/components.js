@@ -542,7 +542,7 @@ export function renderLoggedItemsSection(meals) {
               <p class="text-gray-400 text-sm mb-4">Start tracking your nutrition by logging meals or scanning products
               </p>
               <div class="flex justify-center gap-3">
-                <a href="#meals"
+                <a href="#" data-route="/home"
                   class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all">
                   <i data-fa-i2svg=""><svg class="svg-inline--fa fa-plus" data-prefix="fas" data-icon="plus" role="img"
                       viewBox="0 0 448 512" aria-hidden="true" data-fa-i2svg="">
@@ -552,8 +552,8 @@ export function renderLoggedItemsSection(meals) {
                     </svg></i>
                   Browse Recipes
                 </a>
-                <a href="/products"
-                  class="nav-link inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                <a href="#" data-route="/products"
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
                   <i data-fa-i2svg=""><svg class="svg-inline--fa fa-barcode" data-prefix="fas" data-icon="barcode"
                       role="img" viewBox="0 0 448 512" aria-hidden="true" data-fa-i2svg="">
                       <path fill="currentColor"

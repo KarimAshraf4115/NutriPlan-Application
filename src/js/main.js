@@ -32,7 +32,7 @@ const sidebarCloseBtn = document.getElementById("sidebar-close-btn");
 
 const headerTitle = document.getElementById("header-title");
 const headerSubtitle = document.getElementById("header-subtitle");
-
+let currentView = "grid";
 
 function openSidebar() {
     sidebar.classList.add("open");
@@ -324,36 +324,40 @@ async function showMealDetails(id) {
         let meal = getRecipeById(id);
         if (!meal) {
             const mealData = await getMealDetails(id);
-            meal = mealData.result;
+            meal = mealData.result || mealData.meals?.[0];
         }
+        if (!meal) throw new Error("Meal data not found");
         mealDetailsSection.innerHTML = renderDetails(meal);
         showMealDetailsPage();
-        const backButton = document.getElementById("back-to-meals-btn")
-        backButton.addEventListener("click", () => {
-            history.back()
-        })
-
-        const ingredientsList = formatIngredients(meal.ingredients)
-        const nutrition = await getNutritionAnalysis(meal.name, ingredientsList);
-        const nutritionData = nutrition.data
-
+        const backButton = document.getElementById("back-to-meals-btn");
+        if (backButton) backButton.addEventListener("click", () => history.back());
+        const ingredientsList = formatIngredients(meal.ingredients || []);
+        const nutrition = await getNutritionAnalysis(meal.name || meal.strMeal, ingredientsList);
+        const nutritionData = nutrition.data || nutrition;
         const logMealBtn = document.getElementById("log-meal-btn");
-        logMealBtn.disabled = false;
-        logMealBtn.removeAttribute("title");
-        logMealBtn.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed");
-        logMealBtn.classList.add("bg-blue-600", "text-white", "hover:bg-blue-700");
-        logMealBtn.innerHTML = `<i class="fa-solid fa-clipboard-list"></i><span>Log This Meal</span>`;
+        if (logMealBtn) {
+            logMealBtn.disabled = false;
+            logMealBtn.removeAttribute("title");
+            logMealBtn.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed");
+            logMealBtn.classList.add("bg-blue-600", "text-white", "hover:bg-blue-700");
+            logMealBtn.innerHTML = `<i class="fa-solid fa-clipboard-list"></i><span>Log This Meal</span>`;
 
-        logMealBtn.addEventListener("click", () => {
-            openLogMealModal(meal, nutritionData);
-        });
-        document.getElementById("nutrition-facts-container").innerHTML = renderNutritionFacts(nutritionData);
-        document.getElementById("hero-servings").textContent = nutritionData.servings + " servings";
-        document.getElementById("hero-calories").textContent = nutritionData.perServing.calories + " cal/serving";
+            logMealBtn.addEventListener("click", () => {
+                openLogMealModal(meal, nutritionData);
+            });
+        }
+        const nutritionContainer = document.getElementById("nutrition-facts-container");
+        if (nutritionContainer) nutritionContainer.innerHTML = renderNutritionFacts(nutritionData);
+        const heroServings = document.getElementById("hero-servings");
+        if (heroServings) heroServings.textContent = (nutritionData?.servings || 1) + " servings";
+
+        const heroCalories = document.getElementById("hero-calories");
+        if (heroCalories) heroCalories.textContent = (nutritionData?.perServing?.calories || 0) + " cal/serving";
+
     } catch (error) {
-        console.log(error);
-        mealDetailsSection.innerHTML = "<p>Failed to load meal details.</p>";
-        showMealDetailsPage()
+        console.error("Error loading meal details:", error);
+        mealDetailsSection.innerHTML = "<p>Failed to load meal details. Please try again.</p>";
+        showMealDetailsPage();
     }
 }
 
@@ -401,7 +405,6 @@ function setListView() {
 gridViewBtn.addEventListener("click", setGridView);
 listViewBtn.addEventListener("click", setListView);
 
-let currentView = "grid";
 
 function renderCurrentView(recipes) {
     return currentView === "list" ? renderRecipesList(recipes) : renderRecipes(recipes);
@@ -446,6 +449,7 @@ const dateHeader = document.getElementById("date-header")
 dateHeader.textContent = getToday()
 
 function updateProgressBarInLogs(prefix, current, goal, unit, colorClass, textColorClass) {
+    if (!goal || goal <= 0) return;
     const percent = calcBarWidth(current, goal);
     const bar = document.getElementById(`${prefix}-bar`);
     const percentText = document.getElementById(`${prefix}-percent`);
@@ -453,7 +457,7 @@ function updateProgressBarInLogs(prefix, current, goal, unit, colorClass, textCo
     const isOverGoal = current >= goal;
 
     percentText.textContent = `${Math.round(percent)}%`;
-    bar.style.width = `${percent}%`;
+    bar.style.width = `${Math.min(100, percent)}%`;
     valueText.textContent = `${current} ${unit}`;
 
     const activeColor = isOverGoal ? "bg-red-500" : colorClass;
@@ -505,6 +509,12 @@ loggedItemsSection.addEventListener("click", (e) => {
             }
         });
 
+    }
+
+    const navBtn = e.target.closest("[data-route]");
+    if (navBtn) {
+        e.preventDefault();
+        navigate(navBtn.getAttribute("data-route"));
     }
 })
 
@@ -682,7 +692,7 @@ async function loadProductsCategories() {
             });
         });
     } catch (error) {
-        ProductsCategories.innerHTML = `"<p>Failed to load product. Please try again.</p>"`
+        ProductsCategories.innerHTML = `<p>Failed to load product. Please try again.</p>`
     }
 }
 
